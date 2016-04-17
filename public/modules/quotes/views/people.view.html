@@ -1,0 +1,17 @@
+<section data-ng-controller="PeopleController">
+	<div>
+		 People controller
+		 
+		 <input type="text" ng-model="quote.people.name" />
+		 <br/> 
+		 <button ng-click="addDriver()">Add Driver</button>
+		 <ul>
+		    <li ng-repeat="driver in people.drivers">{{$index}} <input type="text" ng-model="driver.name" />  <button ng-click="removeDriver(driver,$index)">X</button></li>
+		</ul>
+		 <br/>
+		
+		<button ng-click="previousPage()">Previous</button>
+		<button ng-click="nextPage()">Next</button>
+	</div>
+	 
+</section>
