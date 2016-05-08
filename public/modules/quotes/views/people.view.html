@@ -6,10 +6,18 @@
 		 <br/> 
 		 <button ng-click="addDriver()">Add Driver</button>
 		 <ul>
-		    <li ng-repeat="driver in people.drivers">{{$index}} <input type="text" ng-model="driver.name" />  <button ng-click="removeDriver(driver,$index)">X</button></li>
+		    <li ng-repeat="driver in people.drivers">{{$index}} 
+    		<select ng-model="selectedColor" ng-options="color.name for color in colors" ng-change="update(driver)"></select>
+		     
+		     <!-- <select ng-model="selectedColor"  ng-change="update(driver)">
+   <option ng-repeat="color in colors" value="{{color.name}}" ng-hide="color.isAdded">{{color.name}}</option>
+</select> -->
+
+		    <input type="text" ng-model="driver.name" />
+		    <input type="text" ng-model="driver.color" />  
+		    <button ng-click="removeDriver(driver,$index)">X</button></li>
 		</ul>
 		 <br/>
-		
 		<button ng-click="previousPage()">Previous</button>
 		<button ng-click="nextPage()">Next</button>
 	</div>
