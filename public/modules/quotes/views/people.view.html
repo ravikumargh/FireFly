@@ -4,18 +4,27 @@
 		 
 		 <input type="text" ng-model="quote.people.name" />
 		 <br/> 
-		 <button ng-click="addDriver()">Add Driver</button>
 		 <ul>
 		    <li ng-repeat="driver in people.drivers">{{$index}} 
-    		<select ng-model="selectedColor" ng-options="color.name for color in colors" ng-change="update(driver)"></select>
-		     
-		     <!-- <select ng-model="selectedColor"  ng-change="update(driver)">
-   <option ng-repeat="color in colors" value="{{color.name}}" ng-hide="color.isAdded">{{color.name}}</option>
-</select> -->
-
 		    <input type="text" ng-model="driver.name" />
 		    <input type="text" ng-model="driver.color" />  
 		    <button ng-click="removeDriver(driver,$index)">X</button></li>
+		</ul>
+		<br/>	
+		 <button ng-click="addDriver()">Add Driver</button>
+		 <ul>
+		    <li ng-repeat="policyholder in people.policyholders">{{$index}} 
+    		<select ng-model="selectedColor" ng-options="driver.name for driver in people.drivers" ng-change="update(policyholder)"></select>
+		     
+		     <!-- <select ng-model="selectedColor"  ng-change="update(policyholder)">
+   <option ng-repeat="driver in drivers" value="{{driver.name}}" ng-hide="driver.isAdded">{{driver.name}}</option>
+</select> -->
+
+		    <input type="text" ng-model="policyholder.name" />
+		    <input type="text" ng-model="policyholder.age" />  
+		    <input type="text" ng-model="policyholder.email" />  
+		    <input type="text" ng-model="policyholder.phone" />  
+		    <button ng-click="removePolicyholder(policyholder,$index)">X</button></li>
 		</ul>
 		 <br/>
 		<button ng-click="previousPage()">Previous</button>

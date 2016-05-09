@@ -9,7 +9,8 @@ angular.module('quote').controller('HomeController', ['$scope', 'Authentication'
 			get:'',
 			people:{
 				name:'',
-				drivers:[]
+				drivers:[],
+				policyholders:[]
 			},
 			legal:'',
 			confirm:'',
