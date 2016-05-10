@@ -19,7 +19,7 @@
 		     <!--{{selectedDriver}} -->
 			 <br>
 			  <select ng-model="selectedDriver" ng-options="driver.name for driver in people.drivers | filter:shouldShow" ng-change="update(policyholder)">
-				<option value="">-- Choose driver --</option>
+				<option value="">{{policyholder.driver.name}}</option>
 			  </select>
 
 		    <input type="text" ng-model="policyholder.driver.name" />
