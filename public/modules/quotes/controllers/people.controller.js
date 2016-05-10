@@ -5,65 +5,86 @@ angular.module('quote').controller('PeopleController', ['$scope', '$location', '
     function ($scope, $location, Authentication) {
         // This provides Authentication context.
         $scope.authentication = Authentication;
+        
+        $scope.people = $scope.$parent.quote.people;        
+        var drivers = $scope.$parent.quote.people.drivers;
+        var policyholders = $scope.$parent.quote.people.policyholders;
         var Driver = {
+            id: '',
             name: '',
             age: '',
-            isPrimary:false
+            isPrimary: false,
+            isAdded: false
         }
         var PolicyHolder = {
+            id: '',
             email: '',
-            phone: '',
-            color: '',
-            name: '',
-            age: ''
+            phone: ''
         }
-         /**/
-        var driver=angular.copy(Driver);
-        driver.name="ravikumar";
-        driver.age="30";
-        driver.isPrimary=true;
-        $scope.$parent.quote.people.drivers.push(driver);
+        var generateUUID = function () {
+            var d = new Date().getTime();
+            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (d + Math.random() * 16) % 16 | 0;
+                d = Math.floor(d / 16);
+                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+            return uuid;
+        };
         
-        
-        driver=angular.copy(Driver);
-        driver.name="ashwini";
-        driver.age="20";
-        $scope.$parent.quote.people.drivers.push(driver);
-        
-        driver=angular.copy(Driver);
-        driver.name="tanish";
-        driver.age="10";
-        $scope.$parent.quote.people.drivers.push(driver);
-        
-        console.log($scope.$parent.quote.people.drivers);
-        var drivers=$scope.$parent.quote.people.drivers;
-        var primaryDriver=null;
-        for (var index = 0; index < drivers.length; index++) {
-            var element = drivers[index];
-            if (element.isPrimary) {
-               primaryDriver=element;
-               break; 
-            }
+        $scope.shouldShow = function (driver) {
+            return !driver.isAdded;
         }
-        var policyholder=angular.copy(PolicyHolder);
-        policyholder.name=primaryDriver.name;
-        policyholder.age=primaryDriver.age;
-        $scope.$parent.quote.people.policyholders.push(policyholder);
-        
-        $scope.colors = [
-            { name: 'white', isAdded: false, isPrimary: true },
-            { name: 'black', isAdded: false },
-            { name: 'red', isAdded: false },
-            { name: 'blue', isAdded: false },
-            { name: 'yellow', isAdded: false }
-        ];
-        $scope.colorsTemp = angular.copy($scope.colors);
+        $scope.init = function () {
+            /*driver*/
+            var driver = angular.copy(Driver);
+            driver.id = generateUUID();
+            driver.name = "ravikumar";
+            driver.age = "30";
+            driver.isPrimary = true;
+            $scope.$parent.quote.people.drivers.push(driver);
 
-        $scope.update = function (driver) {
-            debugger;
-            driver.color = this.selectedColor.name;
+            driver = angular.copy(Driver);
+            driver.id = generateUUID();
+            driver.name = "ashwini";
+            //driver.isAdded=true;
+            driver.age = "20";
+            $scope.$parent.quote.people.drivers.push(driver);
+
+            driver = angular.copy(Driver);
+            driver.id = generateUUID();
+            driver.name = "tanish";
+            driver.age = "10";
+            $scope.$parent.quote.people.drivers.push(driver);
+
+
+            console.log($scope.$parent.quote.people.drivers);
+            var primaryDriver = null;
+            for (var index = 0; index < drivers.length; index++) {
+                var element = drivers[index];
+                if (element.isPrimary) {
+                    primaryDriver = element;
+                    break;
+                }
+            }
+            var policyholder = angular.copy(PolicyHolder);
+            policyholder.id = generateUUID();
+            policyholder.driver = primaryDriver;
+            /*
+            policyholder.name=primaryDriver.name;
+            policyholder.age=primaryDriver.age;
+            */
+            $scope.$parent.quote.people.policyholders.push(policyholder);
+            $scope.selectedDriver = primaryDriver;
+
+            window.quote = $scope.$parent.quote;
         }
-        $scope.people = $scope.$parent.quote.people;
+
+        $scope.update = function (policyholder) {
+            debugger;
+            policyholder.driver = this.selectedDriver;
+            resetDropDown();
+        }
+
         var diverIndex = 0;
         $scope.addDriver = function () {
             var driver = angular.copy(Driver);
@@ -74,26 +95,45 @@ angular.module('quote').controller('PeopleController', ['$scope', '$location', '
 
             if (diverIndex > 1) {
                 for (var i = $scope.colorsTemp.length - 1; i >= 0; i--) {
-                    if ($scope.colorsTemp[i].name === this.selectedColor.name) {
+                    if ($scope.colorsTemp[i].name === this.selectedDriver.name) {
                         $scope.colors.splice(i + 1, 1);
                     }
-                };
-                //var index = $scope.colors.indexOf(this.selectedColor.name);
-                //$scope.colors.splice(index+1, 1);
-                //$scope.colors[index+1].isAdded=true; 
+                }; 
             }
-
-            this.selectedColor = $scope.colors[0];
         }
-        $scope.removePolicyholder = function (driver, index) {
-            for (var i = $scope.colorsTemp.length - 1; i >= 0; i--) {
-                if ($scope.colorsTemp[i].name === this.selectedColor.name) {
-                    $scope.colors.push($scope.colorsTemp[i]);
+        /* Start PolicyHolder */
+        $scope.addPolicyHolder = function () {
+            var policyholder = angular.copy(PolicyHolder);
+            policyholder.name = "policyholder " + diverIndex;
+            policyholder.age = "age " + diverIndex;
+            diverIndex++;
+            $scope.$parent.quote.people.policyholders.push(policyholder);
+            $scope.selectedDriver=null;
+            resetDropDown();
+        }
+        $scope.removePolicyholder = function (policyholder, index) {
+            if (policyholders[index].driver) {
+                policyholders[index].driver.isAdded = false;
+            }
+            policyholders.splice(index, 1);
+        }
+        
+        var resetDropDown=function () {
+            for (var i = 0; i < drivers.length; i++) {
+                var driver = drivers[i];
+                driver.isAdded = false;
+                for (var j = 0; j < policyholders.length; j++) {
+                    var policyholder = policyholders[j];
+                    if (policyholder.driver && policyholder.driver.id === driver.id) {
+                        driver.isAdded = true;
+                        break;
+                    }
                 }
-            };
-
-            $scope.people.drivers.splice(index, 1);
+            }
         }
+        /* End PolicyHolder */
+               
+        
 
         $scope.previousPage = function (driver, index) {
             $location.path("quote/get");
