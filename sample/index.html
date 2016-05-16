@@ -1,0 +1,47 @@
+<!doctype html>
+<html ng-app="quote">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="people.controller.js"></script>
+  </head>
+  <body>
+    <h2>Todo</h2>
+    <section data-ng-controller="PeopleController" ng-init="init()">
+	<div>
+        {{quote}}
+		 People controller
+		 
+		 <input type="text" ng-model="quote.people.name" />
+		 <br/> 
+		 <button ng-click="addDriver()">Add Driver</button>
+		 <br/> 
+		 <ul>
+		    <li ng-repeat="driver in people.drivers">{{$index}} 
+		    <input type="text" ng-model="driver.name" />
+		    <input type="text" ng-model="driver.isAdded" />  
+		    <button ng-click="removeDriver(driver,$index)">X</button></li>
+		</ul>
+		<br/> 
+		<button ng-click="addPolicyHolder()">Add Policy Holder</button>	
+		 <ul>
+		    <li ng-repeat="policyholder in people.policyholders">{{$index}} 
+		     <!--{{selectedDriver}} -->
+			 <br>
+			  <select ng-model="selectedDriver" ng-options="driver.name for driver in people.drivers | filter:shouldShow" ng-change="update(policyholder)">
+				<option value="">{{policyholder.driver.name}}</option>
+			  </select>
+
+		    <input type="text" ng-model="policyholder.driver.name" />
+		    <input type="text" ng-model="policyholder.driver.age" />  
+		    <input type="text" ng-model="policyholder.email" />  
+		    <input type="text" ng-model="policyholder.phone" />  
+		    <button ng-click="removePolicyholder(policyholder,$index)">X</button></li>
+		</ul>
+		 <br/>
+		<button ng-click="previousPage()">Previous</button>
+		<button ng-click="nextPage()">Next</button>
+	</div>
+	 
+</section>
+  </body>
+</html>
